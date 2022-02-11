@@ -1,6 +1,6 @@
 # astar-lua
 
-Depedencie : [priority_queue](https://gist.github.com/LukeMS/89dc587abd786f92d60886f4977b1953)
+Dependency : [priority_queue](https://gist.github.com/LukeMS/89dc587abd786f92d60886f4977b1953)
 
 ```lua
 path = finder(startNode, goalNode, getNeighborNodes, getCost, heuristic)
