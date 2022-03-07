@@ -34,26 +34,27 @@ end
 
 -- returns all the adjacent walkable nodes from a node
 local getAdj = function(node)
+    local nodes = {}
 	local getNode = function(x, y)
 		if y >= 1 and y <= #map and x >= 1 and x <= #map[y] then
 			if map[y][x].walkable then
-				return map[y][x]
+				table.insert(nodes, map[y][x])
 			end
 		end
 	end
 
-	return {
-		getNode(node.x - 1, node.y),
-		getNode(node.x + 1, node.y),
-		getNode(node.x, node.y - 1),
-		getNode(node.x, node.y + 1),
+	getNode(node.x - 1, node.y),
+	getNode(node.x + 1, node.y),
+	getNode(node.x, node.y - 1),
+	getNode(node.x, node.y + 1),
 
-		--diagonal search
-		--getNode(node.x - 1, node.y - 1),
-		--getNode(node.x + 1, node.y - 1),
-		--getNode(node.x - 1, node.y + 1),
-		--getNode(node.x + 1, node.y + 1),
-	}
+	--diagonal search
+	--getNode(node.x - 1, node.y - 1),
+	--getNode(node.x + 1, node.y - 1),
+	--getNode(node.x - 1, node.y + 1),
+	--getNode(node.x + 1, node.y + 1)
+
+    return nodes
 end
 
 -- returns the moving cost
