@@ -49,7 +49,7 @@ local Pathfinder = function(startNode, goalNode, getNeighborNodes, getCost, heur
 			break
 		end
 
-		for _,next in pairs(getNeighborNodes(current)) do
+		for _,next in ipairs(getNeighborNodes(current)) do
 			if next then
 				local thisCost = getCost(current, next)
 
