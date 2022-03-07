@@ -8,7 +8,7 @@ path = finder(startNode, goalNode, getNeighborNodes, getCost, heuristic)
 ### Arguments
 - **(table)** startNode : the starting node
 - **(table)** goalNode : the goal node
-- **(function)** getNeighborNodes : a function that take a node as argument and return a **(table)** that contains the adjacent nodes. The **nil** values in the table are ignored.
+- **(function)** getNeighborNodes : a function that take a node as argument and return a **(table)** that contains the adjacent nodes. Don't include **nil** in this table.
 ```lua
 function getAdj(node)
   return {...}
