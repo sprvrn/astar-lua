@@ -51,7 +51,7 @@ local Pathfinder = function(startNode, goalNode, getNeighborNodes, getCost, heur
 
 		local neighbors = getNeighborNodes(current)
 		for i=1,#neighbors do
-			next = neighbors[i]
+			local next = neighbors[i]
 			
 			if next then
 				local thisCost = getCost(current, next)
