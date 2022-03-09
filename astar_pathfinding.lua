@@ -24,7 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ]]
 
-local PriorityQueue = require "priority_queue"
+local PriorityQueue = require "libs.priority_queue"
 
 local Pathfinder = function(startNode, goalNode, getNeighborNodes, getCost, heuristic)
 	assert(type(startNode) == "table", "startNode must be a table")
@@ -49,7 +49,10 @@ local Pathfinder = function(startNode, goalNode, getNeighborNodes, getCost, heur
 			break
 		end
 
-		for _,next in ipairs(getNeighborNodes(current)) do
+		local neighbors = getNeighborNodes(current)
+		for i=1,#neighbors do
+			next = neighbors[i]
+			
 			if next then
 				local thisCost = getCost(current, next)
 
