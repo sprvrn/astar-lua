@@ -1,6 +1,6 @@
 -- Example with a graph
 
-local finder = require "astar_pathfinding"
+local finder = require "pathfinding"
 
 local graph = {
 		a = {
@@ -104,7 +104,7 @@ local getCost = function(node1, node2)
 end
 
 -- get the shortest path from node A to node I
-local path = finder(graph.a, graph.i, getAdj, getCost)
+local path = finder("one", graph.a, graph.i, getAdj, getCost)
 
 for i=1,#path do
 	print(

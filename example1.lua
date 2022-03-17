@@ -1,6 +1,6 @@
 -- Example with a grid
 
-local finder = require "astar_pathfinding"
+local finder = require "pathfinding"
 
 -- the map data
 -- -1 : wall
@@ -43,10 +43,10 @@ local getAdj = function(node)
 		end
 	end
 
-	getNode(node.x - 1, node.y),
-	getNode(node.x + 1, node.y),
-	getNode(node.x, node.y - 1),
-	getNode(node.x, node.y + 1),
+	getNode(node.x - 1, node.y)
+	getNode(node.x + 1, node.y)
+	getNode(node.x, node.y - 1)
+	getNode(node.x, node.y + 1)
 
 	--diagonal search
 	--getNode(node.x - 1, node.y - 1),
@@ -68,7 +68,7 @@ local heuristic = function(node1, node2)
 end
 
 -- seach the shortest path from 2:2 to 8:8
-local path = finder(map[2][2], map[8][8], getAdj, getCost, heuristic)
+local path = finder("one", map[2][2], map[8][8], getAdj, getCost, heuristic)
 
 for i=1,#path do
 	print(
