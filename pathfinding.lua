@@ -140,13 +140,19 @@ local Pathfinder = function(mode, startNode, goalNode, getNeighborNodes, getCost
 			while frontier:size() > 0 do
 				local current = frontier:pop()
 
-				if contains(goalNode, current) then
+				if type(goalNode) == "table" and contains(goalNode, current) then
 					table.insert(paths, constructPath(startNode, current, cameFrom))
 
 					table.remove(goalNode, index_of(goalNode, current))
 
 					if #goalNode == 0 then
 						break
+					end
+				end
+
+				if type(goalNode) == "function" then
+					if goalNode(current, step) then
+						table.insert(paths, constructPath(startNode, current, cameFrom))
 					end
 				end
 
