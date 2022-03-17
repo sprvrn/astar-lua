@@ -1,13 +1,14 @@
 # astar-lua
 
-Dependency : [priority_queue](https://gist.github.com/LukeMS/89dc587abd786f92d60886f4977b1953)
+Dependency : [priority_queue](https://gist.github.com/LukeMS/89dc587abd786f92d60886f4977b1953) (or any priority queue class with push, pop and size method)
 
 ```lua
 path = finder(startNode, goalNode, getNeighborNodes, getCost, heuristic)
 ```
 ### Arguments
+- **(string)** mode ("one" or "many")
 - **(table)** startNode : the starting node
-- **(table)** goalNode : the goal node
+- **(table)** goalNode : the goal node (if mode = "one" this argument is a node, if mode = "many" it's a list of nodes)
 - **(function)** getNeighborNodes : a function that take a node as argument and return a **(table)** that contains the adjacent nodes. Don't include **nil** in this table.
 ```lua
 function getAdj(node)
@@ -39,3 +40,4 @@ end
   ...
 }
 ```
+Note: if mode is "many", the function returns a list of paths.
