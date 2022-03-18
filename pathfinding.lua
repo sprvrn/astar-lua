@@ -134,8 +134,10 @@ local Pathfinder = function(mode, startNode, goalNode, getNeighborNodes, getCost
 		end,
 		-- dijkstra
 		many = function()
-			paths = {}
-			step = 1
+			local paths = {}
+			local step = 1
+
+			local debugFront = {}
 
 			while frontier:size() > 0 do
 				local current = frontier:pop()
