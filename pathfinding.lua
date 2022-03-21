@@ -79,7 +79,7 @@ local Pathfinder = function(mode, startNode, goalNode, getNeighborNodes, getCost
 	assert(type(goalNode) == "table" or type(goalNode) == "function", "goalNode must be a table or a function")
 	assert(type(getNeighborNodes) == "function", "getNeighborNodes must be a function")
 
-	getCost = getCost or function() return 0 end
+	getCost = getCost or function() return 1 end
 	heuristic = heuristic or function () return 0 end
 
 	local frontier = PriorityQueue()
@@ -136,8 +136,6 @@ local Pathfinder = function(mode, startNode, goalNode, getNeighborNodes, getCost
 		many = function()
 			local paths = {}
 			local step = 1
-
-			local debugFront = {}
 
 			while frontier:size() > 0 do
 				local current = frontier:pop()
