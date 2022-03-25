@@ -23,7 +23,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ]]
 
-local PriorityQueue = require "priority_queue"
+local path = (...):gsub("pathfinding", "")
+
+local PriorityQueue = require(path .. "priority_queue")
 
 local function contains(table, element)
 	for _, value in pairs(table) do
@@ -151,7 +153,7 @@ local Pathfinder = function(mode, startNode, goalNode, getNeighborNodes, getCost
 				end
 
 				if type(goalNode) == "function" then
-					if goalNode(current, step) then
+					if goalNode(current, cameFrom[current]) then
 						table.insert(paths, constructPath(startNode, current, cameFrom))
 					end
 				end
