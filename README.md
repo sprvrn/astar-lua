@@ -3,7 +3,7 @@
 Dependency : [priority_queue](https://gist.github.com/LukeMS/89dc587abd786f92d60886f4977b1953) (or any priority queue class with push, pop and size method)
 
 ```lua
-path = finder(startNode, goalNode, getNeighborNodes, getCost, heuristic)
+path = finder(mode, startNode, goalNode, getNeighborNodes, getCost, heuristic)
 ```
 ### Arguments
 - **(string)** mode ("one" or "many")
