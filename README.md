@@ -15,7 +15,7 @@ function getAdj(node)
   return {...}
 end
 ```
-- *optional* **(function)** getCost : a function that take two adjacent nodes as arguments and return the moving cost **(number)** between those two nodes. If this function is not provided the cost is always == 0.
+- *optional* **(function)** getCost : a function that take two adjacent nodes as arguments and return the moving cost **(number)** between those two nodes. If this function is not provided the cost is always == 1.
 ```lua
 function getCost(node1, node2)
   return node1.cost
