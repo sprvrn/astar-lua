@@ -23,9 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ]]
 
-local path = (...):gsub("pathfinding", "")
-
-local PriorityQueue = require(path .. "priority_queue")
+local PriorityQueue = require "priority_queue"
 
 local function contains(table, element)
 	for _, value in pairs(table) do
@@ -77,6 +75,7 @@ local constructPath = function(startNode, goalNode, cameFrom)
 end
 
 local Pathfinder = function(mode, startNode, goalNode, getNeighborNodes, getCost, heuristic)
+	assert(mode == "one" or mode == "many", "mode is either one or many")
 	assert(type(startNode) == "table", "startNode must be a table")
 	assert(type(goalNode) == "table" or type(goalNode) == "function", "goalNode must be a table or a function")
 	assert(type(getNeighborNodes) == "function", "getNeighborNodes must be a function")
@@ -92,105 +91,101 @@ local Pathfinder = function(mode, startNode, goalNode, getNeighborNodes, getCost
 	cameFrom[startNode] = {node = nil, cost = 0, costSoFar = 0}
 	costSofar[startNode] = 0
 
-	local search = {
-		-- A star
-		one = function()
-			while frontier:size() > 0 do
-				local current = frontier:pop()
+	if mode == "one" then -- A star
+		while frontier:size() > 0 do
+			local current = frontier:pop()
 
-				if current == goalNode then
+			if current == goalNode then
+				break
+			end
+
+			local neighbors = getNeighborNodes(current)
+
+			for i=1,#neighbors do
+				local next = neighbors[i]
+
+				if next then
+					local thisCost = getCost(current, next)
+
+					assert(type(thisCost) == "number", "getCost function must always return a number value")
+
+					local newCost = costSofar[current] + thisCost
+
+					if not costSofar[next] or newCost < costSofar[next] then
+						local distance = heuristic(goalNode, next)
+
+						assert(type(distance) == "number", "heuristic function must always return a number value")
+
+						costSofar[next] = newCost + distance
+						frontier:put(next, newCost)
+
+						cameFrom[next] = {
+							node = current,
+							cost = thisCost,
+							costSoFar = thisCost + cameFrom[current].costSoFar
+						}
+					end
+				end
+			end
+		end
+
+		return constructPath(startNode, goalNode, cameFrom)
+
+	elseif mode == "many" then -- dijkstra
+		local paths = {}
+		local step = 1
+
+		local debugFront = {}
+
+		while frontier:size() > 0 do
+			local current = frontier:pop()
+
+			if type(goalNode) == "table" and contains(goalNode, current) then
+				table.insert(paths, constructPath(startNode, current, cameFrom))
+
+				table.remove(goalNode, index_of(goalNode, current))
+
+				if #goalNode == 0 then
 					break
 				end
-
-				local neighbors = getNeighborNodes(current)
-
-				for i=1,#neighbors do
-					local next = neighbors[i]
-
-					if next then
-						local thisCost = getCost(current, next)
-
-						assert(type(thisCost) == "number", "getCost function must always return a number value")
-
-						local newCost = costSofar[current] + thisCost
-
-						if not costSofar[next] or newCost < costSofar[next] then
-							local distance = heuristic(goalNode, next)
-
-							assert(type(distance) == "number", "heuristic function must always return a number value")
-
-							costSofar[next] = newCost + distance
-							frontier:put(next, newCost)
-
-							cameFrom[next] = {
-								node = current,
-								cost = thisCost,
-								costSoFar = thisCost + cameFrom[current].costSoFar
-							}
-						end
-					end
-				end
 			end
 
-			return constructPath(startNode, goalNode, cameFrom)
-		end,
-		-- dijkstra
-		many = function()
-			local paths = {}
-			local step = 1
-
-			while frontier:size() > 0 do
-				local current = frontier:pop()
-
-				if type(goalNode) == "table" and contains(goalNode, current) then
+			if type(goalNode) == "function" then
+				if goalNode(current, step) then
 					table.insert(paths, constructPath(startNode, current, cameFrom))
-
-					table.remove(goalNode, index_of(goalNode, current))
-
-					if #goalNode == 0 then
-						break
-					end
 				end
-
-				if type(goalNode) == "function" then
-					if goalNode(current, cameFrom[current]) then
-						table.insert(paths, constructPath(startNode, current, cameFrom))
-					end
-				end
-
-				local neighbors = getNeighborNodes(current)
-
-				for i=1,#neighbors do
-					local next = neighbors[i]
-
-					if next then
-						local thisCost = getCost(current, next)
-
-						assert(type(thisCost) == "number", "getCost function must always return a number value")
-
-						local newCost = costSofar[current] + thisCost
-
-						if not costSofar[next] or newCost < costSofar[next] then
-							costSofar[next] = newCost
-
-							frontier:put(next, newCost)
-							cameFrom[next] = {
-								node = current,
-								cost = thisCost,
-								costSoFar = thisCost + cameFrom[current].costSoFar
-							}
-						end
-					end
-				end
-
-				step = step + 1
 			end
 
-			return paths
-		end
-	}
+			local neighbors = getNeighborNodes(current)
 
-	return search[mode]()
+			for i=1,#neighbors do
+				local next = neighbors[i]
+
+				if next then
+					local thisCost = getCost(current, next)
+
+					assert(type(thisCost) == "number", "getCost function must always return a number value")
+
+					local newCost = costSofar[current] + thisCost
+
+					if not costSofar[next] or newCost < costSofar[next] then
+						costSofar[next] = newCost
+
+						frontier:put(next, newCost)
+						cameFrom[next] = {
+							node = current,
+							cost = thisCost,
+							costSoFar = thisCost + cameFrom[current].costSoFar
+						}
+					end
+				end
+			end
+
+			step = step + 1
+		end
+
+		return paths
+	end
 end
 
 return Pathfinder
